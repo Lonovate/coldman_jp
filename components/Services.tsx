@@ -102,6 +102,8 @@ export function Services() {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ["100px", "-100px"]);
+  const y2 = useTransform(scrollYProgress, [0, 1], ["-50px", "80px"]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 15]);
 
   const t = translations[language];
 
@@ -114,6 +116,10 @@ export function Services() {
       <motion.div
         style={{ y }}
         className="absolute top-0 right-0 w-1/3 h-full bg-blue-100/20 rounded-l-full blur-3xl"
+      />
+      <motion.div
+        style={{ y: y2, rotate }}
+        className="absolute bottom-0 left-0 w-1/4 h-1/2 bg-blue-200/10 rounded-full blur-3xl"
       />
 
       <div className="container mx-auto px-4 relative z-10">

@@ -52,8 +52,28 @@ export function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
+  const chatButtonRef = useRef<HTMLDivElement>(null);
 
   const t = translations[language];
+
+  // Close chat when clicking outside
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (
+        chatWindowRef.current &&
+        !chatWindowRef.current.contains(target) &&
+        chatButtonRef.current &&
+        !chatButtonRef.current.contains(target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
 
   // Reset greeting when language changes or chat opens
   useEffect(() => {
@@ -103,6 +123,7 @@ export function Chatbot() {
     <>
       {/* Chat Button */}
       <motion.div
+        ref={chatButtonRef}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         className="fixed bottom-6 right-6 z-50"
@@ -124,6 +145,7 @@ export function Chatbot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={chatWindowRef}
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -132,8 +154,8 @@ export function Chatbot() {
             {/* Header */}
             <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center p-1.5">
-                  <img src="/logo.png" alt="Coldman JP" className="w-full h-full object-contain brightness-0 invert" />
+                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center p-1">
+                  <img src="/logo.png" alt="Coldman JP" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <div className="font-bold">Coldman JP</div>

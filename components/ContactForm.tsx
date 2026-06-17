@@ -12,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { Send, CheckCircle } from "lucide-react";
+import { useRef } from "react";
 import { useLanguage } from "@/lib/i18n/context";
 
 const translations = {
@@ -69,6 +70,14 @@ const translations = {
 
 export function ContactForm() {
   const { language } = useLanguage();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const bgX = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"]);
+  const bgX2 = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -104,9 +113,19 @@ export function ContactForm() {
   return (
     <section
       id="contact"
-      className="py-24 bg-gradient-to-br from-gray-50 to-blue-50"
+      ref={sectionRef}
+      className="py-24 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden"
     >
-      <div className="container mx-auto px-4">
+      {/* Parallax decorative orbs */}
+      <motion.div
+        style={{ x: bgX }}
+        className="absolute top-10 right-0 w-80 h-80 bg-blue-200/30 rounded-full blur-3xl"
+      />
+      <motion.div
+        style={{ x: bgX2 }}
+        className="absolute bottom-10 left-0 w-64 h-64 bg-blue-100/40 rounded-full blur-3xl"
+      />
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

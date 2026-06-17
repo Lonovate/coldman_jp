@@ -1,7 +1,8 @@
 "use client";
 
 import { Shield, Award, Users, Clock } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 import { useLanguage } from "@/lib/i18n/context";
 
 const translations = {
@@ -80,13 +81,22 @@ const translations = {
 export function TrustSection() {
   const { language } = useLanguage();
   const t = translations[language];
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const orbY1 = useTransform(scrollYProgress, [0, 1], ["-20%", "30%"]);
+  const orbY2 = useTransform(scrollYProgress, [0, 1], ["30%", "-20%"]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
 
   return (
-    <section className="py-24 bg-gradient-to-br from-blue-900 to-blue-700 text-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
-      </div>
+    <section ref={ref} className="py-24 bg-gradient-to-br from-blue-900 to-blue-700 text-white relative overflow-hidden">
+      <motion.div className="absolute inset-0 opacity-10" style={{ y: bgY }}>
+        <motion.div style={{ y: orbY1 }} className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+        <motion.div style={{ y: orbY2 }} className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+      </motion.div>
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
