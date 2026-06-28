@@ -89,7 +89,7 @@ export function Hero() {
             {t.description}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+          {/* <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Button
               size="lg"
               className="bg-white text-blue-900 hover:bg-blue-50 text-lg px-8 h-12"
@@ -105,7 +105,7 @@ export function Hero() {
               <Play className="mr-2 w-5 h-5" />
               {t.learn}
             </Button>
-          </div>
+          </div> */}
 
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-3xl mx-auto">

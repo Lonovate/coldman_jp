@@ -1,9 +1,14 @@
 "use client";
 
 import { Phone, Mail, MapPin } from "lucide-react";
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
+import { useRef, useState, useCallback } from "react";
 import { useLanguage } from "@/lib/i18n/context";
+import {
+  serviceTranslations,
+  ServiceModal,
+  type ServiceData,
+} from "./Services";
 
 const translations = {
   en: {
@@ -44,13 +49,16 @@ export function Footer() {
   const { language } = useLanguage();
   const t = translations[language];
   const ref = useRef<HTMLElement>(null);
+  const [selectedService, setSelectedService] = useState<ServiceData | null>(null);
+  const handleCloseModal = useCallback(() => setSelectedService(null), []);
+  const allServices = serviceTranslations[language].services;
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end end"],
   });
   const bgY = useTransform(scrollYProgress, [0, 1], ["50px", "0px"]);
 
-  return (
+  return (<>
     <footer ref={ref} className="bg-gray-900 text-white pt-16 pb-8 relative overflow-hidden">
       {/* Parallax accent */}
       <motion.div
@@ -97,7 +105,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://wa.me/17871234567"
+                href="https://wa.me/17873889689"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-green-500 transition-colors"
@@ -119,26 +127,16 @@ export function Footer() {
           >
             <h3 className="font-bold text-lg mb-4">{t.services}</h3>
             <ul className="space-y-2 text-gray-400">
-              <li>
-                <a href="#services" className="hover:text-white transition-colors">
-                  {t.installation}
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-white transition-colors">
-                  {t.maintenance}
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-white transition-colors">
-                  {t.diagnostics}
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-white transition-colors">
-                  {t.repair}
-                </a>
-              </li>
+              {allServices.map((service, index) => (
+                <li key={index}>
+                  <button
+                    onClick={() => setSelectedService(service)}
+                    className="hover:text-white transition-colors cursor-pointer text-left"
+                  >
+                    {service.title}
+                  </button>
+                </li>
+              ))}
             </ul>
           </motion.div>
 
@@ -154,19 +152,19 @@ export function Footer() {
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
                 <a
-                  href="tel:+17871234567"
+                  href="tel:+17875256934"
                   className="hover:text-white transition-colors"
                 >
-                  (787) 123-4567
+                  (787) 525-6934
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
                 <a
-                  href="mailto:info@coldmanjp.com"
+                  href="mailto:coldmanjp.llc@gmail.com"
                   className="hover:text-white transition-colors"
                 >
-                  info@coldmanjp.com
+                  coldmanjp.llc@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-2">
@@ -209,5 +207,12 @@ export function Footer() {
         </div>
       </div>
     </footer>
+
+      <AnimatePresence>
+        {selectedService && (
+          <ServiceModal service={selectedService} onClose={handleCloseModal} />
+        )}
+      </AnimatePresence>
+    </>
   );
 }

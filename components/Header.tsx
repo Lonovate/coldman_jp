@@ -100,7 +100,7 @@ export function Header() {
           {/* Right Side Actions */}
           <div className="hidden lg:flex items-center gap-4">
             <a
-              href="tel:+17871234567"
+              href="tel:+17875256934"
               className={`flex items-center gap-2 transition-colors ${
                 isScrolled
                   ? "text-gray-700 hover:text-blue-600"
@@ -108,7 +108,7 @@ export function Header() {
               }`}
             >
               <Phone className="w-4 h-4" />
-              <span className="text-sm">(787) 123-4567</span>
+              <span className="text-sm">(787) 525-6934</span>
             </a>
             <Button
               variant="ghost"
@@ -123,7 +123,14 @@ export function Header() {
             >
               <Globe className="w-4 h-4" />
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() =>
+                document
+                  .getElementById("contact")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               {t.quote}
             </Button>
           </div>
@@ -185,15 +192,23 @@ export function Header() {
                 </a>
               ))}
               <a
-                href="tel:+17871234567"
+                href="tel:+17875256934"
                 className={`flex items-center gap-2 ${
                   isScrolled ? "text-gray-700" : "text-white/90"
                 }`}
               >
                 <Phone className="w-4 h-4" />
-                <span>(787) 123-4567</span>
+                <span>(787) 525-6934</span>
               </a>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  document
+                    .getElementById("contact")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 {t.quote}
               </Button>
             </nav>

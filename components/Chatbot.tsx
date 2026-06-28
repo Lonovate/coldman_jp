@@ -27,7 +27,7 @@ const translations = {
     ],
     greeting: "Hello! How can I help you with your HVAC needs today?",
     autoReply:
-      "Thank you for your message! A team member will respond shortly. For immediate assistance, call (787) 123-4567.",
+      "Thank you for your message! A team member will respond shortly. For immediate assistance, call (787) 525-6934.",
   },
   es: {
     title: "Chatea con nosotros",
@@ -42,7 +42,7 @@ const translations = {
     greeting:
       "¡Hola! ¿Cómo puedo ayudarte con tus necesidades de HVAC hoy?",
     autoReply:
-      "¡Gracias por tu mensaje! Un miembro del equipo responderá pronto. Para asistencia inmediata, llama al (787) 123-4567.",
+      "¡Gracias por tu mensaje! Un miembro del equipo responderá pronto. Para asistencia inmediata, llama al (787) 525-6934.",
   },
 };
 

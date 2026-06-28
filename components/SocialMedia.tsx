@@ -30,9 +30,9 @@ function WhatsAppIcon({ className }: { className?: string }) {
 const socials = [
   { icon: FacebookIcon, href: "https://www.facebook.com/profile.php?id=100090963060487", color: "hover:bg-blue-600", label: "Facebook" },
   { icon: InstagramIcon, href: "https://www.instagram.com/coldmanjp", color: "hover:bg-pink-600", label: "Instagram" },
-  { icon: WhatsAppIcon, href: "https://wa.me/17871234567", color: "hover:bg-green-500", label: "WhatsApp" },
-  { icon: Phone, href: "tel:+17871234567", color: "hover:bg-blue-400", label: "Phone" },
-  { icon: Mail, href: "mailto:info@coldmanjp.com", color: "hover:bg-red-500", label: "Email" },
+  { icon: WhatsAppIcon, href: "https://wa.me/17873889689", color: "hover:bg-green-500", label: "WhatsApp" },
+  { icon: Phone, href: "tel:+17875256934", color: "hover:bg-blue-400", label: "Phone" },
+  { icon: Mail, href: "mailto:coldmanjp.llc@gmail.com", color: "hover:bg-red-500", label: "Email" },
 ];
 
 export function SocialMedia() {

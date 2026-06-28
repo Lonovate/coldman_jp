@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle, Calendar } from "lucide-react";
+import { ClipboardCheck, CheckCircle, Calendar } from "lucide-react";
 import { Button } from "./ui/button";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
@@ -8,7 +8,7 @@ import { useLanguage } from "@/lib/i18n/context";
 
 const translations = {
   en: {
-    title: "The Importance of Regular Maintenance",
+    title: "The Importance of Preventive Maintenance",
     subtitle: "Protect your investment and ensure optimal performance",
     benefits: [
       "Extend equipment lifespan by up to 50%",
@@ -23,12 +23,11 @@ const translations = {
     price24k: "24k BTU",
     price36k: "36k BTU",
     schedule: "Schedule Maintenance",
-    warning: "Without Maintenance",
-    warningText:
-      "AC units can lose 5% efficiency annually without proper care",
+    warning: "Maintenance Contract",
+    warningText: "Available for 5 units or more — keep all your equipment protected year-round",
   },
   es: {
-    title: "La Importancia del Mantenimiento Regular",
+    title: "La Importancia del Mantenimiento Preventivo",
     subtitle: "Protege tu inversión y asegura rendimiento óptimo",
     benefits: [
       "Extiende la vida útil del equipo hasta 50%",
@@ -43,9 +42,9 @@ const translations = {
     price24k: "24k BTU",
     price36k: "36k BTU",
     schedule: "Agendar Mantenimiento",
-    warning: "Sin Mantenimiento",
+    warning: "Contrato de Mantenimiento",
     warningText:
-      "Las unidades de AC pueden perder 5% de eficiencia anualmente sin cuidado apropiado",
+      "Disponible para 5 unidades o más — mantén todos tus equipos protegidos todo el año",
   },
 };
 
@@ -83,7 +82,7 @@ export function MaintenanceSection() {
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1739203469638-d6f54c24a5da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBIVkFDJTIwc2VydmljZSUyMHRlYW18ZW58MXx8fHwxNzgwNjkwMjEyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                src="/services/mantenimiento.jpeg"
                 alt={
                   language === "en"
                     ? "Professional HVAC service team"
@@ -96,14 +95,12 @@ export function MaintenanceSection() {
               {/* Warning Badge */}
               <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 bg-white/95 backdrop-blur-sm rounded-lg p-4">
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
+                  <ClipboardCheck className="w-6 h-6 text-blue-600 shrink-0 mt-1" />
                   <div>
                     <div className="font-bold text-gray-900 mb-1">
                       {t.warning}
                     </div>
-                    <div className="text-sm text-gray-600">
-                      {t.warningText}
-                    </div>
+                    <div className="text-sm text-gray-600">{t.warningText}</div>
                   </div>
                 </div>
               </div>
@@ -160,13 +157,13 @@ export function MaintenanceSection() {
               </div>
             </div>
 
-            <Button
+            {/* <Button
               size="lg"
               className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Calendar className="mr-2 w-5 h-5" />
               {t.schedule}
-            </Button>
+            </Button> */}
           </motion.div>
         </div>
       </div>

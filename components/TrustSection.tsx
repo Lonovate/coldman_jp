@@ -29,7 +29,7 @@ const translations = {
         icon: Clock,
         title: "Flexible Payment",
         description:
-          "Accept ATH Móvil, credit/debit cards, Stripe, checks & cash",
+          "Accept ATH Móvil, credit/debit cards, checks & cash",
       },
     ],
     coastal: "Coastal Properties",
@@ -39,6 +39,9 @@ const translations = {
     guaranteeText: "Professional installation with comprehensive testing",
     guaranteeDetail:
       "Includes pressure testing, deep vacuum & commissioning",
+    federal: "Federal Eligible",
+    federalText: "Registered on SAM.gov with $100,000 General Liability Insurance",
+    federalDetail: "Eligible for federal construction projects",
   },
   es: {
     title: "Por Qué Elegir Coldman JP",
@@ -64,7 +67,7 @@ const translations = {
         icon: Clock,
         title: "Pago Flexible",
         description:
-          "Aceptamos ATH Móvil, tarjetas, Stripe, cheques y efectivo",
+          "Aceptamos ATH Móvil, tarjetas, cheques y efectivo",
       },
     ],
     coastal: "Propiedades Costeras",
@@ -75,6 +78,9 @@ const translations = {
     guaranteeText: "Instalación profesional con pruebas comprensivas",
     guaranteeDetail:
       "Incluye pruebas de presión, vacío profundo y puesta en marcha",
+    federal: "Elegible Federal",
+    federalText: "Registrados en SAM.gov con $100,000 en Seguro de Responsabilidad General",
+    federalDetail: "Elegibles para proyectos de construcción federal",
   },
 };
 
@@ -133,10 +139,10 @@ export function TrustSection() {
           })}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center"
           >
@@ -148,9 +154,10 @@ export function TrustSection() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
             className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center"
           >
             <div className="text-2xl sm:text-3xl font-bold mb-2">
@@ -159,6 +166,22 @@ export function TrustSection() {
             <p className="text-blue-100">{t.guaranteeText}</p>
             <div className="mt-4 text-sm text-blue-100">
               {t.guaranteeDetail}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center"
+          >
+            <div className="text-2xl sm:text-3xl font-bold mb-2">
+              {t.federal}
+            </div>
+            <p className="text-blue-100">{t.federalText}</p>
+            <div className="mt-4 text-sm text-blue-100">
+              {t.federalDetail}
             </div>
           </motion.div>
         </div>
