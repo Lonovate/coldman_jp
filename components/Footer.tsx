@@ -24,6 +24,7 @@ const translations = {
     hoursText: "Monday - Saturday: 8AM - 6PM",
     hoursText2: "Sunday: Emergency Only",
     rights: "All rights reserved.",
+    builtBy: "Built by",
     brands: "We work with",
   },
   es: {
@@ -39,6 +40,7 @@ const translations = {
     hoursText: "Lunes - Sábado: 8AM - 6PM",
     hoursText2: "Domingo: Solo Emergencias",
     rights: "Todos los derechos reservados.",
+    builtBy: "Desarrollado por",
     brands: "Trabajamos con",
   },
 };
@@ -203,6 +205,17 @@ export function Footer() {
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
           <p>
             &copy; {new Date().getFullYear()} Coldman JP. {t.rights}
+          </p>
+          <p className="mt-2">
+            {t.builtBy}{" "}
+            <a
+              href="https://lonovate.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold hover:text-white transition-colors"
+            >
+              Lonovate
+            </a>
           </p>
         </div>
       </div>
