@@ -8,6 +8,7 @@ type ContactBody = {
   service: string;
   subService: string;
   message?: string;
+  emergency?: boolean;
 };
 
 const transporter = nodemailer.createTransport({
@@ -101,10 +102,14 @@ function buildInternalEmail(data: ContactBody): string {
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>Nueva Solicitud de Servicio</h1>
+    <div class="header" ${data.emergency ? 'style="background: linear-gradient(135deg, #991b1b, #dc2626);"' : ""}>
+      <h1>${data.emergency ? "EMERGENCIA - " : ""}Nueva Solicitud de Servicio</h1>
     </div>
-    <div class="body">
+    <div class="body">${
+      data.emergency
+        ? `<div style="background:#fef2f2;border:2px solid #dc2626;border-radius:8px;padding:12px 16px;margin-bottom:20px;color:#991b1b;font-weight:bold;text-align:center;">EMERGENCY / EMERGENCIA</div>`
+        : ""
+    }
       <h2>Informaci&oacute;n del Cliente</h2>
       <table class="info-table">
         <tr><td>Nombre</td><td>${data.firstName} ${data.lastName}</td></tr>
@@ -112,6 +117,7 @@ function buildInternalEmail(data: ContactBody): string {
         <tr><td>Tel&eacute;fono</td><td>${data.phone}</td></tr>
         <tr><td>Servicio</td><td>${data.service}</td></tr>
         <tr><td>Servicio Espec&iacute;fico</td><td>${data.subService}</td></tr>
+        <tr><td>Emergencia</td><td>${data.emergency ? "Si" : "No"}</td></tr>
         <tr><td>Mensaje</td><td>${data.message || "N/A"}</td></tr>
       </table>
 
@@ -124,6 +130,7 @@ function buildInternalEmail(data: ContactBody): string {
         <tr><td>Phone</td><td>${data.phone}</td></tr>
         <tr><td>Service</td><td>${data.service}</td></tr>
         <tr><td>Specific Service</td><td>${data.subService}</td></tr>
+        <tr><td>Emergency</td><td>${data.emergency ? "Yes" : "No"}</td></tr>
         <tr><td>Message</td><td>${data.message || "N/A"}</td></tr>
       </table>
     </div>
@@ -165,7 +172,7 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: `"Coldman JP Web" <${process.env.SMTP_USER}>`,
       to: "Isedd.pacheco@gmail.com",
-      subject: `Nueva Solicitud: ${body.service} - ${body.subService} | ${body.firstName} ${body.lastName}`,
+      subject: `${body.emergency ? "EMERGENCIA - " : ""}Nueva Solicitud: ${body.service} - ${body.subService} | ${body.firstName} ${body.lastName}`,
       html: buildInternalEmail(body),
     });
 

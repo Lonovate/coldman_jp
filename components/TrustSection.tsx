@@ -40,7 +40,7 @@ const translations = {
     guaranteeDetail:
       "Includes pressure testing, deep vacuum & commissioning",
     federal: "Federal Eligible",
-    federalText: "Registered on SAM.gov with $100,000 General Liability Insurance",
+    federalText: "Registered on SAM.gov with $1,000,000 General Liability Insurance",
     federalDetail: "Eligible for federal construction projects",
   },
   es: {
@@ -79,7 +79,7 @@ const translations = {
     guaranteeDetail:
       "Incluye pruebas de presión, vacío profundo y puesta en marcha",
     federal: "Elegible Federal",
-    federalText: "Registrados en SAM.gov con $100,000 en Seguro de Responsabilidad General",
+    federalText: "Registrados en SAM.gov con $1,000,000 en Seguro de Responsabilidad General",
     federalDetail: "Elegibles para proyectos de construcción federal",
   },
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -12,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { motion, useScroll, useTransform } from "motion/react";
-import { Send, CheckCircle } from "lucide-react";
+import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
+import { Send, CheckCircle, AlertTriangle } from "lucide-react";
 import { useRef } from "react";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -233,6 +233,9 @@ const translations = {
     messagePlaceholder:
       "Additional details, number of units, preferred schedule, etc.",
     submit: "Send Request",
+    emergency: "Emergency",
+    emergencyMessage:
+      "This request will be treated as an emergency. This prioritizes your case for a faster response time and is subject to emergency service rates.",
     success: "Request Sent!",
     successMessage: "We'll contact you soon",
   },
@@ -251,6 +254,9 @@ const translations = {
     messagePlaceholder:
       "Más información, cantidad de unidades, horario preferido, etc.",
     submit: "Enviar Solicitud",
+    emergency: "Emergencia",
+    emergencyMessage:
+      "Esta solicitud sera tratada como una emergencia. Esto prioriza su caso para un tiempo de respuesta mas rapido y esta sujeto a tarifas de servicio de emergencia.",
     success: "¡Solicitud Enviada!",
     successMessage: "Te contactaremos pronto",
   },
@@ -275,9 +281,16 @@ export function ContactForm() {
     subService: "",
     message: "",
   });
+  const [isEmergency, setIsEmergency] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const handleEmergency = () => setIsEmergency(true);
+    window.addEventListener("coldman:emergency", handleEmergency);
+    return () => window.removeEventListener("coldman:emergency", handleEmergency);
+  }, []);
 
   const t = translations[language];
   const services = serviceOptions[language];
@@ -298,6 +311,7 @@ export function ContactForm() {
         body: JSON.stringify({
           ...formData,
           service: serviceLabel,
+          emergency: isEmergency,
         }),
       });
 
@@ -306,6 +320,7 @@ export function ContactForm() {
       setIsSubmitted(true);
       setTimeout(() => {
         setIsSubmitted(false);
+        setIsEmergency(false);
         setFormData({
           firstName: "",
           lastName: "",
@@ -494,6 +509,45 @@ export function ContactForm() {
                   placeholder={t.messagePlaceholder}
                   className="mt-2"
                 />
+              </div>
+
+              {/* Emergency toggle */}
+              <div className="mb-6">
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={isEmergency}
+                    onClick={() => setIsEmergency((prev) => !prev)}
+                    className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 ${
+                      isEmergency ? "bg-red-600" : "bg-gray-200"
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-6 w-6 rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ${
+                        isEmergency ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                  <Label className="flex items-center gap-2 cursor-pointer mb-0" onClick={() => setIsEmergency((prev) => !prev)}>
+                    <AlertTriangle className={`w-4 h-4 ${isEmergency ? "text-red-600" : "text-gray-400"}`} />
+                    {t.emergency}
+                  </Label>
+                </div>
+                <AnimatePresence>
+                  {isEmergency && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <p className="mt-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">
+                        {t.emergencyMessage}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {error && (

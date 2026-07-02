@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
-import { Phone, Menu, X, Globe } from "lucide-react";
+import { Phone, Menu, X, Globe, AlertTriangle } from "lucide-react";
 import { motion } from "motion/react";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -11,13 +11,13 @@ const translations = {
     services: "Services",
     about: "About",
     contact: "Contact",
-    quote: "Get Quote",
+    emergency: "Emergency",
   },
   es: {
     services: "Servicios",
     about: "Nosotros",
     contact: "Contacto",
-    quote: "Cotizar",
+    emergency: "Emergencia",
   },
 };
 
@@ -124,14 +124,16 @@ export function Header() {
               <Globe className="w-4 h-4" />
             </Button>
             <Button
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() =>
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("coldman:emergency"));
                 document
                   .getElementById("contact")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
             >
-              {t.quote}
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              {t.emergency}
             </Button>
           </div>
 
@@ -201,15 +203,17 @@ export function Header() {
                 <span>(787) 525-6934</span>
               </a>
               <Button
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-red-600 hover:bg-red-700 text-white"
                 onClick={() => {
                   setIsMobileMenuOpen(false);
+                  window.dispatchEvent(new CustomEvent("coldman:emergency"));
                   document
                     .getElementById("contact")
                     ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
-                {t.quote}
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                {t.emergency}
               </Button>
             </nav>
           </motion.div>
