@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -26,8 +26,8 @@ const translations = {
       "Emergency repair",
     ],
     greeting: "Hello! How can I help you with your HVAC needs today?",
-    autoReply:
-      "Thank you for your message! A team member will respond shortly. For immediate assistance, call (787) 525-6934.",
+    errorReply:
+      "Sorry, I'm having trouble responding right now. Please try again or call (787) 525-6934.",
   },
   es: {
     title: "Chatea con nosotros",
@@ -41,16 +41,22 @@ const translations = {
     ],
     greeting:
       "¡Hola! ¿Cómo puedo ayudarte con tus necesidades de HVAC hoy?",
-    autoReply:
-      "¡Gracias por tu mensaje! Un miembro del equipo responderá pronto. Para asistencia inmediata, llama al (787) 525-6934.",
+    errorReply:
+      "Lo siento, tengo problemas para responder ahora. Por favor intenta de nuevo o llama al (787) 525-6934.",
   },
 };
+
+function generateThreadId(): string {
+  return crypto.randomUUID();
+}
 
 export function Chatbot() {
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [threadId] = useState(() => generateThreadId());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const chatButtonRef = useRef<HTMLDivElement>(null);
@@ -75,7 +81,7 @@ export function Chatbot() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  // Reset greeting when language changes or chat opens
+  // Reset greeting when language changes
   useEffect(() => {
     setMessages([
       {
@@ -91,32 +97,65 @@ export function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
+  const sendMessage = useCallback(
+    async (text: string) => {
+      if (!text.trim() || isLoading) return;
 
-    const userMessage: Message = {
-      id: Date.now(),
-      text: inputValue,
-      sender: "user",
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue("");
-
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: Date.now() + 1,
-        text: t.autoReply,
-        sender: "bot",
+      const userMessage: Message = {
+        id: Date.now(),
+        text,
+        sender: "user",
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, botResponse]);
-    }, 1000);
+
+      setMessages((prev) => [...prev, userMessage]);
+      setInputValue("");
+      setIsLoading(true);
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: text,
+            threadId,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("API error");
+        }
+
+        const data = await response.json();
+
+        const botResponse: Message = {
+          id: Date.now() + 1,
+          text: data.message || t.errorReply,
+          sender: "bot",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botResponse]);
+      } catch {
+        const errorMessage: Message = {
+          id: Date.now() + 1,
+          text: t.errorReply,
+          sender: "bot",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isLoading, threadId, t.errorReply]
+  );
+
+  const handleSend = () => {
+    sendMessage(inputValue);
   };
 
   const handleQuickReply = (reply: string) => {
-    setInputValue(reply);
+    sendMessage(reply);
   };
 
   return (
@@ -155,7 +194,11 @@ export function Chatbot() {
             <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center p-1">
-                  <img src="/logo.png" alt="Coldman JP" className="w-full h-full object-contain" />
+                  <img
+                    src="/logo.png"
+                    alt="Coldman JP"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <div>
                   <div className="font-bold">Coldman JP</div>
@@ -188,7 +231,7 @@ export function Chatbot() {
                         : "bg-white text-gray-900 rounded-bl-none shadow-sm"
                     }`}
                   >
-                    <p className="text-sm">{message.text}</p>
+                    <p className="text-sm whitespace-pre-wrap">{message.text}</p>
                     <p
                       className={`text-xs mt-1 ${
                         message.sender === "user"
@@ -204,6 +247,13 @@ export function Chatbot() {
                   </div>
                 </div>
               ))}
+              {isLoading && (
+                <div className="mb-4 flex justify-start">
+                  <div className="bg-white text-gray-900 rounded-2xl rounded-bl-none shadow-sm px-4 py-3">
+                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                  </div>
+                </div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
@@ -213,7 +263,8 @@ export function Chatbot() {
                 <button
                   key={index}
                   onClick={() => handleQuickReply(reply)}
-                  className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full whitespace-nowrap hover:bg-blue-100 transition-colors cursor-pointer"
+                  disabled={isLoading}
+                  className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full whitespace-nowrap hover:bg-blue-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {reply}
                 </button>
@@ -228,13 +279,19 @@ export function Chatbot() {
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 placeholder={t.placeholder}
                 className="flex-1"
+                disabled={isLoading}
               />
               <Button
                 onClick={handleSend}
                 size="icon"
-                className="flex-shrink-0 bg-blue-600 hover:bg-blue-700"
+                disabled={isLoading || !inputValue.trim()}
+                className="shrink-0 bg-blue-600 hover:bg-blue-700"
               >
-                <Send className="w-4 h-4" />
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
               </Button>
             </div>
           </motion.div>
